@@ -51,9 +51,12 @@ UART_HandleTypeDef huart2;
 Bme280DeviceData g_sBme280Device;
 CommStatus g_eBme280CommStatus = NOK;
 char g_cMessage[40] = "";
-uint32_t g_ui32TimeoutUart = 100;
-uint8_t g_ui8Delay2s = 20;
-uint16_t g_ui16CounterTimer = 0;
+uint8_t g_ui8CounterTimer1 = 0;
+uint8_t g_ui8CounterTimer2 = 0;
+
+const uint32_t g_ui32TimeoutUart = 100;
+const uint8_t g_ui8Delay2s = 200;
+const uint8_t g_ui8Delay100ms = 10;
 
 /* USER CODE END PV */
 
@@ -70,23 +73,15 @@ static void MX_TIM9_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+/*
+ * Timer interrupt handling (10ms)
+ */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	if (htim == &htim9)
 	{
-		g_ui16CounterTimer++;
-
-		if (g_eBme280CommStatus == NOK)
-		{
-			g_eBme280CommStatus = bme280Init(&hi2c1, &g_sBme280Device);
-			return;
-		}
-
-		if (bme280GetStatus(&hi2c1, &g_sBme280Device) == AVAILABLE)
-		{
-			bme280ReadPressure(&hi2c1, &g_sBme280Device);
-			bme280ReadHumidity(&hi2c1, &g_sBme280Device);
-		}
+		g_ui8CounterTimer1++;
+		g_ui8CounterTimer2++;
 	}
 }
 
@@ -138,7 +133,22 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-	  if (g_ui16CounterTimer >= g_ui8Delay2s)
+	  if (g_ui8CounterTimer2 >= g_ui8Delay100ms)
+	  {
+		  if (g_eBme280CommStatus == NOK)
+		  {
+			  g_eBme280CommStatus = bme280Init(&hi2c1, &g_sBme280Device);
+		  }
+		  else if (bme280GetStatus(&hi2c1, &g_sBme280Device) == AVAILABLE)
+		  {
+			  bme280ReadPressure(&hi2c1, &g_sBme280Device);
+			  bme280ReadHumidity(&hi2c1, &g_sBme280Device);
+		  }
+
+		  g_ui8CounterTimer2 = 0;
+	  }
+
+	  if (g_ui8CounterTimer1 >= g_ui8Delay2s)
 	  {
 		  sprintf(g_cMessage, "Temperature = %.2f Celsius degree\r\n", (((float) g_sBme280Device.i32Temperature) / 100));
 		  HAL_UART_Transmit(&huart2, ((uint8_t *) g_cMessage), strlen(g_cMessage), g_ui32TimeoutUart);
@@ -149,7 +159,7 @@ int main(void)
 		  sprintf(g_cMessage, "Humidity    = %.2f%%\r\n\r\n", (((float) g_sBme280Device.ui32Humidity) /10));
 		  HAL_UART_Transmit(&huart2, ((uint8_t *) g_cMessage), strlen(g_cMessage), g_ui32TimeoutUart);
 
-		  g_ui16CounterTimer = 0;
+		  g_ui8CounterTimer1 = 0;
 	  }
   }
   /* USER CODE END 3 */
@@ -250,7 +260,7 @@ static void MX_TIM9_Init(void)
   htim9.Instance = TIM9;
   htim9.Init.Prescaler = 16000-1;
   htim9.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim9.Init.Period = 100-1;
+  htim9.Init.Period = 10-1;
   htim9.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim9.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim9) != HAL_OK)
