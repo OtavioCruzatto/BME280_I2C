@@ -60,7 +60,7 @@ CommStatus bme280Init(I2C_HandleTypeDef *hi2c, Bme280DeviceData *bme280Device)
 	bme280Device->digH6		= 0x00;
 	bme280Device->temperature	= 0x00000000;
 	bme280Device->pressure	= 0x00000000;
-	bme280Device->humidity    = 0x00000000;
+	bme280Device->humidity  = 0x00000000;
 
 	if (bme280CheckCommunication(hi2c, bme280Device) == NOK)
 	{
@@ -101,21 +101,21 @@ void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *bme280Devi
 	HAL_I2C_Master_Transmit(hi2c, bme280Device->address, &bme280Reg.digT1T3, sizeof(bme280Reg.digT1T3), timeoutI2C);
 	HAL_I2C_Master_Receive(hi2c, bme280Device->address, coefBytes, temperatureCoefQtyBytes, timeoutI2C);
 	bme280Device->digT1 = (coefBytes[1] << 8) | coefBytes[0];
-	bme280Device->digT2  = (coefBytes[3] << 8) | coefBytes[2];
-	bme280Device->digT3  = (coefBytes[5] << 8) | coefBytes[4];
+	bme280Device->digT2 = (coefBytes[3] << 8) | coefBytes[2];
+	bme280Device->digT3 = (coefBytes[5] << 8) | coefBytes[4];
 
 	// Get pressure coefficients
 	HAL_I2C_Master_Transmit(hi2c, bme280Device->address, &bme280Reg.digP1P9, sizeof(bme280Reg.digP1P9), timeoutI2C);
 	HAL_I2C_Master_Receive(hi2c, bme280Device->address, coefBytes, pressureCoefQtyBytes, timeoutI2C);
 	bme280Device->digP1 = (coefBytes[1] << 8) | coefBytes[0];
-	bme280Device->digP2  = (coefBytes[3] << 8) | coefBytes[2];
-	bme280Device->digP3  = (coefBytes[5] << 8) | coefBytes[4];
-	bme280Device->digP4  = (coefBytes[7] << 8) | coefBytes[6];
-	bme280Device->digP5  = (coefBytes[9] << 8) | coefBytes[8];
-	bme280Device->digP6  = (coefBytes[11] << 8) | coefBytes[10];
-	bme280Device->digP7  = (coefBytes[13] << 8) | coefBytes[12];
-	bme280Device->digP8  = (coefBytes[15] << 8) | coefBytes[14];
-	bme280Device->digP9  = (coefBytes[17] << 8) | coefBytes[16];
+	bme280Device->digP2 = (coefBytes[3] << 8) | coefBytes[2];
+	bme280Device->digP3 = (coefBytes[5] << 8) | coefBytes[4];
+	bme280Device->digP4 = (coefBytes[7] << 8) | coefBytes[6];
+	bme280Device->digP5 = (coefBytes[9] << 8) | coefBytes[8];
+	bme280Device->digP6 = (coefBytes[11] << 8) | coefBytes[10];
+	bme280Device->digP7 = (coefBytes[13] << 8) | coefBytes[12];
+	bme280Device->digP8 = (coefBytes[15] << 8) | coefBytes[14];
+	bme280Device->digP9 = (coefBytes[17] << 8) | coefBytes[16];
 
 	// Get humidity coefficients
 	HAL_I2C_Master_Transmit(hi2c, bme280Device->address, &bme280Reg.digH1, sizeof(bme280Reg.digH1), timeoutI2C);
@@ -127,7 +127,7 @@ void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *bme280Devi
 	bme280Device->digH3 = coefBytes[2];
 	bme280Device->digH4 = (coefBytes[3] << 4) | (coefBytes[4] & 0x0F);
 	bme280Device->digH5 = ((coefBytes[4] & 0xF0) >> 4) | (coefBytes[5] << 4);
-	bme280Device->digH6  = coefBytes[6];
+	bme280Device->digH6 = coefBytes[6];
 }
 
 uint8_t bme280CheckId(I2C_HandleTypeDef *hi2c, Bme280DeviceData *bme280Device)
