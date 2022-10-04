@@ -27,23 +27,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  000201e4  2**0
                   CONTENTS, READONLY
- 12 .debug_info   00011b07  00000000  00000000  00020214  2**0
+ 12 .debug_info   00011b03  00000000  00000000  00020214  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 000021b3  00000000  00000000  00031d1b  2**0
+ 13 .debug_abbrev 000021c4  00000000  00000000  00031d17  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 00000fd0  00000000  00000000  00033ed0  2**3
+ 14 .debug_aranges 00000fd0  00000000  00000000  00033ee0  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_ranges 00000f10  00000000  00000000  00034ea0  2**3
+ 15 .debug_ranges 00000f10  00000000  00000000  00034eb0  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  000234fd  00000000  00000000  00035db0  2**0
+ 16 .debug_macro  000234fd  00000000  00000000  00035dc0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   00013332  00000000  00000000  000592ad  2**0
+ 17 .debug_line   0001332e  00000000  00000000  000592bd  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    000d5b62  00000000  00000000  0006c5df  2**0
+ 18 .debug_str    000d5a98  00000000  00000000  0006c5eb  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000050  00000000  00000000  00142141  2**0
+ 19 .comment      00000050  00000000  00000000  00142083  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  000059bc  00000000  00000000  00142194  2**2
+ 20 .debug_frame  000059bc  00000000  00000000  001420d4  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -1396,14 +1396,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  80010e4:	4293      	cmp	r3, r2
  80010e6:	d10b      	bne.n	8001100 <HAL_TIM_PeriodElapsedCallback+0x28>
 	{
-		g_ui8CounterTimer1++;
+		counterTimer1++;
  80010e8:	4b09      	ldr	r3, [pc, #36]	; (8001110 <HAL_TIM_PeriodElapsedCallback+0x38>)
  80010ea:	781b      	ldrb	r3, [r3, #0]
  80010ec:	3301      	adds	r3, #1
  80010ee:	b2da      	uxtb	r2, r3
  80010f0:	4b07      	ldr	r3, [pc, #28]	; (8001110 <HAL_TIM_PeriodElapsedCallback+0x38>)
  80010f2:	701a      	strb	r2, [r3, #0]
-		g_ui8CounterTimer2++;
+		counterTimer2++;
  80010f4:	4b07      	ldr	r3, [pc, #28]	; (8001114 <HAL_TIM_PeriodElapsedCallback+0x3c>)
  80010f6:	781b      	ldrb	r3, [r3, #0]
  80010f8:	3301      	adds	r3, #1
@@ -1459,7 +1459,7 @@ int main(void)
  8001130:	f000 f92c 	bl	800138c <MX_TIM9_Init>
   /* USER CODE BEGIN 2 */
 
-  g_eBme280CommStatus = bme280Init(&hi2c1, &g_sBme280Device);
+  bme280CommStatus = bme280Init(&hi2c1, &bme280Device);
  8001134:	4942      	ldr	r1, [pc, #264]	; (8001240 <main+0x128>)
  8001136:	4843      	ldr	r0, [pc, #268]	; (8001244 <main+0x12c>)
  8001138:	f003 fcd6 	bl	8004ae8 <bme280Init>
@@ -1475,20 +1475,20 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-	  if (g_ui8CounterTimer2 >= g_ui8Delay100ms)
+	  if (counterTimer2 >= delay100ms)
  800114a:	4b41      	ldr	r3, [pc, #260]	; (8001250 <main+0x138>)
  800114c:	781b      	ldrb	r3, [r3, #0]
  800114e:	220a      	movs	r2, #10
  8001150:	4293      	cmp	r3, r2
  8001152:	d31e      	bcc.n	8001192 <main+0x7a>
 	  {
-		  if (g_eBme280CommStatus == NOK)
+		  if (bme280CommStatus == NOK)
  8001154:	4b3c      	ldr	r3, [pc, #240]	; (8001248 <main+0x130>)
  8001156:	781b      	ldrb	r3, [r3, #0]
  8001158:	2b00      	cmp	r3, #0
  800115a:	d108      	bne.n	800116e <main+0x56>
 		  {
-			  g_eBme280CommStatus = bme280Init(&hi2c1, &g_sBme280Device);
+			  bme280CommStatus = bme280Init(&hi2c1, &bme280Device);
  800115c:	4938      	ldr	r1, [pc, #224]	; (8001240 <main+0x128>)
  800115e:	4839      	ldr	r0, [pc, #228]	; (8001244 <main+0x12c>)
  8001160:	f003 fcc2 	bl	8004ae8 <bme280Init>
@@ -1498,7 +1498,7 @@ int main(void)
  800116a:	701a      	strb	r2, [r3, #0]
  800116c:	e00e      	b.n	800118c <main+0x74>
 		  }
-		  else if (bme280GetStatus(&hi2c1, &g_sBme280Device) == AVAILABLE)
+		  else if (bme280GetStatus(&hi2c1, &bme280Device) == AVAILABLE)
  800116e:	4934      	ldr	r1, [pc, #208]	; (8001240 <main+0x128>)
  8001170:	4834      	ldr	r0, [pc, #208]	; (8001244 <main+0x12c>)
  8001172:	f003 ff35 	bl	8004fe0 <bme280GetStatus>
@@ -1506,30 +1506,30 @@ int main(void)
  8001178:	2b00      	cmp	r3, #0
  800117a:	d107      	bne.n	800118c <main+0x74>
 		  {
-			  bme280ReadPressure(&hi2c1, &g_sBme280Device);
+			  bme280ReadPressure(&hi2c1, &bme280Device);
  800117c:	4930      	ldr	r1, [pc, #192]	; (8001240 <main+0x128>)
  800117e:	4831      	ldr	r0, [pc, #196]	; (8001244 <main+0x12c>)
  8001180:	f004 f81c 	bl	80051bc <bme280ReadPressure>
-			  bme280ReadHumidity(&hi2c1, &g_sBme280Device);
+			  bme280ReadHumidity(&hi2c1, &bme280Device);
  8001184:	492e      	ldr	r1, [pc, #184]	; (8001240 <main+0x128>)
  8001186:	482f      	ldr	r0, [pc, #188]	; (8001244 <main+0x12c>)
  8001188:	f004 fb46 	bl	8005818 <bme280ReadHumidity>
 		  }
 
-		  g_ui8CounterTimer2 = 0;
+		  counterTimer2 = 0;
  800118c:	4b30      	ldr	r3, [pc, #192]	; (8001250 <main+0x138>)
  800118e:	2200      	movs	r2, #0
  8001190:	701a      	strb	r2, [r3, #0]
 	  }
 
-	  if (g_ui8CounterTimer1 >= g_ui8Delay2s)
+	  if (counterTimer1 >= delay2s)
  8001192:	4b30      	ldr	r3, [pc, #192]	; (8001254 <main+0x13c>)
  8001194:	781b      	ldrb	r3, [r3, #0]
  8001196:	22c8      	movs	r2, #200	; 0xc8
  8001198:	4293      	cmp	r3, r2
  800119a:	d3d6      	bcc.n	800114a <main+0x32>
 	  {
-		  sprintf(g_cMessage, "Temperature = %.2f Celsius degree\r\n", (((float) g_sBme280Device.i32Temperature) / 100));
+		  sprintf(message, "Temperature = %.2f Celsius degree\r\n", (((float) bme280Device.temperature) / 100));
  800119c:	4b28      	ldr	r3, [pc, #160]	; (8001240 <main+0x128>)
  800119e:	6b1b      	ldr	r3, [r3, #48]	; 0x30
  80011a0:	ee07 3a90 	vmov	s15, r3
@@ -1543,7 +1543,7 @@ int main(void)
  80011bc:	4927      	ldr	r1, [pc, #156]	; (800125c <main+0x144>)
  80011be:	4828      	ldr	r0, [pc, #160]	; (8001260 <main+0x148>)
  80011c0:	f005 fa80 	bl	80066c4 <siprintf>
-		  HAL_UART_Transmit(&huart2, ((uint8_t *) g_cMessage), strlen(g_cMessage), g_ui32TimeoutUart);
+		  HAL_UART_Transmit(&huart2, ((uint8_t *) message), strlen(message), timeoutUart);
  80011c4:	4826      	ldr	r0, [pc, #152]	; (8001260 <main+0x148>)
  80011c6:	f7ff f823 	bl	8000210 <strlen>
  80011ca:	4603      	mov	r3, r0
@@ -1553,14 +1553,14 @@ int main(void)
  80011d2:	4824      	ldr	r0, [pc, #144]	; (8001264 <main+0x14c>)
  80011d4:	f003 f913 	bl	80043fe <HAL_UART_Transmit>
 
-		  sprintf(g_cMessage, "Pressure    = %"PRIu32" Pascal\r\n", g_sBme280Device.ui32Pressure);
+		  sprintf(message, "Pressure    = %"PRIu32" Pascal\r\n", bme280Device.pressure);
  80011d8:	4b19      	ldr	r3, [pc, #100]	; (8001240 <main+0x128>)
  80011da:	6b5b      	ldr	r3, [r3, #52]	; 0x34
  80011dc:	461a      	mov	r2, r3
  80011de:	4922      	ldr	r1, [pc, #136]	; (8001268 <main+0x150>)
  80011e0:	481f      	ldr	r0, [pc, #124]	; (8001260 <main+0x148>)
  80011e2:	f005 fa6f 	bl	80066c4 <siprintf>
-		  HAL_UART_Transmit(&huart2, ((uint8_t *) g_cMessage), strlen(g_cMessage), g_ui32TimeoutUart);
+		  HAL_UART_Transmit(&huart2, ((uint8_t *) message), strlen(message), timeoutUart);
  80011e6:	481e      	ldr	r0, [pc, #120]	; (8001260 <main+0x148>)
  80011e8:	f7ff f812 	bl	8000210 <strlen>
  80011ec:	4603      	mov	r3, r0
@@ -1570,7 +1570,7 @@ int main(void)
  80011f4:	481b      	ldr	r0, [pc, #108]	; (8001264 <main+0x14c>)
  80011f6:	f003 f902 	bl	80043fe <HAL_UART_Transmit>
 
-		  sprintf(g_cMessage, "Humidity    = %.2f%%\r\n\r\n", (((float) g_sBme280Device.ui32Humidity) /10));
+		  sprintf(message, "Humidity    = %.2f%%\r\n\r\n", (((float) bme280Device.humidity) /10));
  80011fa:	4b11      	ldr	r3, [pc, #68]	; (8001240 <main+0x128>)
  80011fc:	6b9b      	ldr	r3, [r3, #56]	; 0x38
  80011fe:	ee07 3a90 	vmov	s15, r3
@@ -1584,7 +1584,7 @@ int main(void)
  800121a:	4914      	ldr	r1, [pc, #80]	; (800126c <main+0x154>)
  800121c:	4810      	ldr	r0, [pc, #64]	; (8001260 <main+0x148>)
  800121e:	f005 fa51 	bl	80066c4 <siprintf>
-		  HAL_UART_Transmit(&huart2, ((uint8_t *) g_cMessage), strlen(g_cMessage), g_ui32TimeoutUart);
+		  HAL_UART_Transmit(&huart2, ((uint8_t *) message), strlen(message), timeoutUart);
  8001222:	480f      	ldr	r0, [pc, #60]	; (8001260 <main+0x148>)
  8001224:	f7fe fff4 	bl	8000210 <strlen>
  8001228:	4603      	mov	r3, r0
@@ -1594,11 +1594,11 @@ int main(void)
  8001230:	480c      	ldr	r0, [pc, #48]	; (8001264 <main+0x14c>)
  8001232:	f003 f8e4 	bl	80043fe <HAL_UART_Transmit>
 
-		  g_ui8CounterTimer1 = 0;
+		  counterTimer1 = 0;
  8001236:	4b07      	ldr	r3, [pc, #28]	; (8001254 <main+0x13c>)
  8001238:	2200      	movs	r2, #0
  800123a:	701a      	strb	r2, [r3, #0]
-	  if (g_ui8CounterTimer2 >= g_ui8Delay100ms)
+	  if (counterTimer2 >= delay100ms)
  800123c:	e785      	b.n	800114a <main+0x32>
  800123e:	bf00      	nop
  8001240:	200002e0 	.word	0x200002e0
@@ -11164,11 +11164,11 @@ static void UART_SetConfig(UART_HandleTypeDef *huart)
  8004ae4:	51eb851f 	.word	0x51eb851f
 
 08004ae8 <bme280Init>:
-static Bme280Reg sBme280Reg;
-static int32_t i32FineTemperature = 0;
-static uint32_t ui32TimeoutI2C = 100;
+static Bme280Reg bme280Reg;
+static int32_t fineTemperature = 0;
+static uint32_t timeoutI2C = 100;
 
-CommStatus bme280Init(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Device)
+CommStatus bme280Init(I2C_HandleTypeDef *hi2c, Bme280DeviceData *bme280Device)
 {
  8004ae8:	b580      	push	{r7, lr}
  8004aea:	b086      	sub	sp, #24
@@ -11179,189 +11179,189 @@ CommStatus bme280Init(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Device)
  8004af2:	2300      	movs	r3, #0
  8004af4:	73fb      	strb	r3, [r7, #15]
 
-	sBme280Reg.ui8Id 				= 0xD0;
+	bme280Reg.id 			= 0xD0;
  8004af6:	4b5c      	ldr	r3, [pc, #368]	; (8004c68 <bme280Init+0x180>)
  8004af8:	22d0      	movs	r2, #208	; 0xd0
  8004afa:	701a      	strb	r2, [r3, #0]
-	sBme280Reg.ui8Reset[0]			= 0xE0;
+	bme280Reg.reset[0]		= 0xE0;
  8004afc:	4b5a      	ldr	r3, [pc, #360]	; (8004c68 <bme280Init+0x180>)
  8004afe:	22e0      	movs	r2, #224	; 0xe0
  8004b00:	705a      	strb	r2, [r3, #1]
-	sBme280Reg.ui8Reset[1]			= 0xB6;
+	bme280Reg.reset[1]		= 0xB6;
  8004b02:	4b59      	ldr	r3, [pc, #356]	; (8004c68 <bme280Init+0x180>)
  8004b04:	22b6      	movs	r2, #182	; 0xb6
  8004b06:	709a      	strb	r2, [r3, #2]
-	sBme280Reg.ui8CtrlHum			= 0xF2;
+	bme280Reg.ctrlHum		= 0xF2;
  8004b08:	4b57      	ldr	r3, [pc, #348]	; (8004c68 <bme280Init+0x180>)
  8004b0a:	22f2      	movs	r2, #242	; 0xf2
  8004b0c:	70da      	strb	r2, [r3, #3]
-	sBme280Reg.ui8Status			= 0xF3;
+	bme280Reg.status		= 0xF3;
  8004b0e:	4b56      	ldr	r3, [pc, #344]	; (8004c68 <bme280Init+0x180>)
  8004b10:	22f3      	movs	r2, #243	; 0xf3
  8004b12:	711a      	strb	r2, [r3, #4]
-	sBme280Reg.ui8CtrlMeas			= 0xF4;
+	bme280Reg.ctrlMeas		= 0xF4;
  8004b14:	4b54      	ldr	r3, [pc, #336]	; (8004c68 <bme280Init+0x180>)
  8004b16:	22f4      	movs	r2, #244	; 0xf4
  8004b18:	715a      	strb	r2, [r3, #5]
-	sBme280Reg.ui8Config			= 0xF5;
+	bme280Reg.config		= 0xF5;
  8004b1a:	4b53      	ldr	r3, [pc, #332]	; (8004c68 <bme280Init+0x180>)
  8004b1c:	22f5      	movs	r2, #245	; 0xf5
  8004b1e:	719a      	strb	r2, [r3, #6]
-	sBme280Reg.ui8Press				= 0xF7;
+	bme280Reg.press			= 0xF7;
  8004b20:	4b51      	ldr	r3, [pc, #324]	; (8004c68 <bme280Init+0x180>)
  8004b22:	22f7      	movs	r2, #247	; 0xf7
  8004b24:	71da      	strb	r2, [r3, #7]
-	sBme280Reg.ui8Temp				= 0xFA;
+	bme280Reg.temp			= 0xFA;
  8004b26:	4b50      	ldr	r3, [pc, #320]	; (8004c68 <bme280Init+0x180>)
  8004b28:	22fa      	movs	r2, #250	; 0xfa
  8004b2a:	721a      	strb	r2, [r3, #8]
-	sBme280Reg.ui8Hum				= 0xFD;
+	bme280Reg.hum			= 0xFD;
  8004b2c:	4b4e      	ldr	r3, [pc, #312]	; (8004c68 <bme280Init+0x180>)
  8004b2e:	22fd      	movs	r2, #253	; 0xfd
  8004b30:	725a      	strb	r2, [r3, #9]
-	sBme280Reg.ui8DigT1T3			= 0x88;
+	bme280Reg.digT1T3		= 0x88;
  8004b32:	4b4d      	ldr	r3, [pc, #308]	; (8004c68 <bme280Init+0x180>)
  8004b34:	2288      	movs	r2, #136	; 0x88
  8004b36:	729a      	strb	r2, [r3, #10]
-	sBme280Reg.ui8DigP1P9			= 0x8E;
+	bme280Reg.digP1P9		= 0x8E;
  8004b38:	4b4b      	ldr	r3, [pc, #300]	; (8004c68 <bme280Init+0x180>)
  8004b3a:	228e      	movs	r2, #142	; 0x8e
  8004b3c:	72da      	strb	r2, [r3, #11]
-	sBme280Reg.ui8DigH1				= 0xA1;
+	bme280Reg.digH1			= 0xA1;
  8004b3e:	4b4a      	ldr	r3, [pc, #296]	; (8004c68 <bme280Init+0x180>)
  8004b40:	22a1      	movs	r2, #161	; 0xa1
  8004b42:	731a      	strb	r2, [r3, #12]
-	sBme280Reg.ui8DigH2H6			= 0xE1;
+	bme280Reg.digH2H6		= 0xE1;
  8004b44:	4b48      	ldr	r3, [pc, #288]	; (8004c68 <bme280Init+0x180>)
  8004b46:	22e1      	movs	r2, #225	; 0xe1
  8004b48:	735a      	strb	r2, [r3, #13]
 
-	sBme280Device->ui8Id			= 0x60;
+	bme280Device->id		= 0x60;
  8004b4a:	683b      	ldr	r3, [r7, #0]
  8004b4c:	2260      	movs	r2, #96	; 0x60
  8004b4e:	701a      	strb	r2, [r3, #0]
-	sBme280Device->ui8Address		= 0x76 << 1;
+	bme280Device->address	= 0x76 << 1;
  8004b50:	683b      	ldr	r3, [r7, #0]
  8004b52:	22ec      	movs	r2, #236	; 0xec
  8004b54:	705a      	strb	r2, [r3, #1]
-	sBme280Device->ui8PressMsb		= 0x00;
+	bme280Device->pressMsb	= 0x00;
  8004b56:	683b      	ldr	r3, [r7, #0]
  8004b58:	2200      	movs	r2, #0
  8004b5a:	709a      	strb	r2, [r3, #2]
-	sBme280Device->ui8PressLsb		= 0x00;
+	bme280Device->pressLsb	= 0x00;
  8004b5c:	683b      	ldr	r3, [r7, #0]
  8004b5e:	2200      	movs	r2, #0
  8004b60:	70da      	strb	r2, [r3, #3]
-	sBme280Device->ui8PressXlsb		= 0x00;
+	bme280Device->pressXlsb	= 0x00;
  8004b62:	683b      	ldr	r3, [r7, #0]
  8004b64:	2200      	movs	r2, #0
  8004b66:	711a      	strb	r2, [r3, #4]
-	sBme280Device->ui8TempMsb		= 0x00;
+	bme280Device->tempMsb	= 0x00;
  8004b68:	683b      	ldr	r3, [r7, #0]
  8004b6a:	2200      	movs	r2, #0
  8004b6c:	715a      	strb	r2, [r3, #5]
-	sBme280Device->ui8TempLsb		= 0x00;
+	bme280Device->tempLsb	= 0x00;
  8004b6e:	683b      	ldr	r3, [r7, #0]
  8004b70:	2200      	movs	r2, #0
  8004b72:	719a      	strb	r2, [r3, #6]
-	sBme280Device->ui8TempXlsb		= 0x00;
+	bme280Device->tempXlsb	= 0x00;
  8004b74:	683b      	ldr	r3, [r7, #0]
  8004b76:	2200      	movs	r2, #0
  8004b78:	71da      	strb	r2, [r3, #7]
-	sBme280Device->ui8HumMsb		= 0x00;
+	bme280Device->humMsb	= 0x00;
  8004b7a:	683b      	ldr	r3, [r7, #0]
  8004b7c:	2200      	movs	r2, #0
  8004b7e:	721a      	strb	r2, [r3, #8]
-	sBme280Device->ui8HumLsb		= 0x00;
+	bme280Device->humLsb	= 0x00;
  8004b80:	683b      	ldr	r3, [r7, #0]
  8004b82:	2200      	movs	r2, #0
  8004b84:	725a      	strb	r2, [r3, #9]
-	sBme280Device->ui16DigT1		= 0x0000;
+	bme280Device->digT1		= 0x0000;
  8004b86:	683b      	ldr	r3, [r7, #0]
  8004b88:	2200      	movs	r2, #0
  8004b8a:	815a      	strh	r2, [r3, #10]
-	sBme280Device->i16DigT2			= 0x0000;
+	bme280Device->digT2		= 0x0000;
  8004b8c:	683b      	ldr	r3, [r7, #0]
  8004b8e:	2200      	movs	r2, #0
  8004b90:	819a      	strh	r2, [r3, #12]
-	sBme280Device->i16DigT3			= 0x0000;
+	bme280Device->digT3		= 0x0000;
  8004b92:	683b      	ldr	r3, [r7, #0]
  8004b94:	2200      	movs	r2, #0
  8004b96:	81da      	strh	r2, [r3, #14]
-	sBme280Device->ui16DigP1		= 0x0000;
+	bme280Device->digP1		= 0x0000;
  8004b98:	683b      	ldr	r3, [r7, #0]
  8004b9a:	2200      	movs	r2, #0
  8004b9c:	821a      	strh	r2, [r3, #16]
-	sBme280Device->i16DigP2			= 0x0000;
+	bme280Device->digP2		= 0x0000;
  8004b9e:	683b      	ldr	r3, [r7, #0]
  8004ba0:	2200      	movs	r2, #0
  8004ba2:	825a      	strh	r2, [r3, #18]
-	sBme280Device->i16DigP3			= 0x0000;
+	bme280Device->digP3		= 0x0000;
  8004ba4:	683b      	ldr	r3, [r7, #0]
  8004ba6:	2200      	movs	r2, #0
  8004ba8:	829a      	strh	r2, [r3, #20]
-	sBme280Device->i16DigP4			= 0x0000;
+	bme280Device->digP4		= 0x0000;
  8004baa:	683b      	ldr	r3, [r7, #0]
  8004bac:	2200      	movs	r2, #0
  8004bae:	82da      	strh	r2, [r3, #22]
-	sBme280Device->i16DigP5			= 0x0000;
+	bme280Device->digP5		= 0x0000;
  8004bb0:	683b      	ldr	r3, [r7, #0]
  8004bb2:	2200      	movs	r2, #0
  8004bb4:	831a      	strh	r2, [r3, #24]
-	sBme280Device->i16DigP6			= 0x0000;
+	bme280Device->digP6		= 0x0000;
  8004bb6:	683b      	ldr	r3, [r7, #0]
  8004bb8:	2200      	movs	r2, #0
  8004bba:	835a      	strh	r2, [r3, #26]
-	sBme280Device->i16DigP7			= 0x0000;
+	bme280Device->digP7		= 0x0000;
  8004bbc:	683b      	ldr	r3, [r7, #0]
  8004bbe:	2200      	movs	r2, #0
  8004bc0:	839a      	strh	r2, [r3, #28]
-	sBme280Device->i16DigP8			= 0x0000;
+	bme280Device->digP8		= 0x0000;
  8004bc2:	683b      	ldr	r3, [r7, #0]
  8004bc4:	2200      	movs	r2, #0
  8004bc6:	83da      	strh	r2, [r3, #30]
-	sBme280Device->i16DigP9			= 0x0000;
+	bme280Device->digP9		= 0x0000;
  8004bc8:	683b      	ldr	r3, [r7, #0]
  8004bca:	2200      	movs	r2, #0
  8004bcc:	841a      	strh	r2, [r3, #32]
-	sBme280Device->ui8DigH1			= 0x00;
+	bme280Device->digH1		= 0x00;
  8004bce:	683b      	ldr	r3, [r7, #0]
  8004bd0:	2200      	movs	r2, #0
  8004bd2:	f883 2022 	strb.w	r2, [r3, #34]	; 0x22
-	sBme280Device->i16DigH2			= 0x0000;
+	bme280Device->digH2		= 0x0000;
  8004bd6:	683b      	ldr	r3, [r7, #0]
  8004bd8:	2200      	movs	r2, #0
  8004bda:	849a      	strh	r2, [r3, #36]	; 0x24
-	sBme280Device->ui8DigH3			= 0x00;
+	bme280Device->digH3		= 0x00;
  8004bdc:	683b      	ldr	r3, [r7, #0]
  8004bde:	2200      	movs	r2, #0
  8004be0:	f883 2026 	strb.w	r2, [r3, #38]	; 0x26
-	sBme280Device->i16DigH4			= 0x0000;
+	bme280Device->digH4		= 0x0000;
  8004be4:	683b      	ldr	r3, [r7, #0]
  8004be6:	2200      	movs	r2, #0
  8004be8:	851a      	strh	r2, [r3, #40]	; 0x28
-	sBme280Device->i16DigH5			= 0x0000;
+	bme280Device->digH5		= 0x0000;
  8004bea:	683b      	ldr	r3, [r7, #0]
  8004bec:	2200      	movs	r2, #0
  8004bee:	855a      	strh	r2, [r3, #42]	; 0x2a
-	sBme280Device->i8DigH6			= 0x00;
+	bme280Device->digH6		= 0x00;
  8004bf0:	683b      	ldr	r3, [r7, #0]
  8004bf2:	2200      	movs	r2, #0
  8004bf4:	f883 202c 	strb.w	r2, [r3, #44]	; 0x2c
-	sBme280Device->i32Temperature	= 0x00000000;
+	bme280Device->temperature	= 0x00000000;
  8004bf8:	683b      	ldr	r3, [r7, #0]
  8004bfa:	2200      	movs	r2, #0
  8004bfc:	631a      	str	r2, [r3, #48]	; 0x30
-	sBme280Device->ui32Pressure		= 0x00000000;
+	bme280Device->pressure	= 0x00000000;
  8004bfe:	683b      	ldr	r3, [r7, #0]
  8004c00:	2200      	movs	r2, #0
  8004c02:	635a      	str	r2, [r3, #52]	; 0x34
-	sBme280Device->ui32Humidity     = 0x00000000;
+	bme280Device->humidity    = 0x00000000;
  8004c04:	683b      	ldr	r3, [r7, #0]
  8004c06:	2200      	movs	r2, #0
  8004c08:	639a      	str	r2, [r3, #56]	; 0x38
 
-	if (bme280CheckCommunication(hi2c, sBme280Device) == NOK)
+	if (bme280CheckCommunication(hi2c, bme280Device) == NOK)
  8004c0a:	6839      	ldr	r1, [r7, #0]
  8004c0c:	6878      	ldr	r0, [r7, #4]
  8004c0e:	f000 f82d 	bl	8004c6c <bme280CheckCommunication>
@@ -11374,7 +11374,7 @@ CommStatus bme280Init(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Device)
  8004c1a:	e020      	b.n	8004c5e <bme280Init+0x176>
 	}
 
-	if (bme280CheckId(hi2c, sBme280Device) == sBme280Device->ui8Id)
+	if (bme280CheckId(hi2c, bme280Device) == bme280Device->id)
  8004c1c:	6839      	ldr	r1, [r7, #0]
  8004c1e:	6878      	ldr	r0, [r7, #4]
  8004c20:	f000 f962 	bl	8004ee8 <bme280CheckId>
@@ -11385,17 +11385,17 @@ CommStatus bme280Init(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Device)
  8004c2c:	429a      	cmp	r2, r3
  8004c2e:	d115      	bne.n	8004c5c <bme280Init+0x174>
 	{
-		bme280GetCoefficients(hi2c, sBme280Device);
+		bme280GetCoefficients(hi2c, bme280Device);
  8004c30:	6839      	ldr	r1, [r7, #0]
  8004c32:	6878      	ldr	r0, [r7, #4]
  8004c34:	f000 f838 	bl	8004ca8 <bme280GetCoefficients>
-		bme280Config(hi2c, sBme280Device, T_10_MS, FILTER_COEF_OFF);
+		bme280Config(hi2c, bme280Device, T_10_MS, FILTER_COEF_OFF);
  8004c38:	2300      	movs	r3, #0
  8004c3a:	2206      	movs	r2, #6
  8004c3c:	6839      	ldr	r1, [r7, #0]
  8004c3e:	6878      	ldr	r0, [r7, #4]
  8004c40:	f000 f9f6 	bl	8005030 <bme280Config>
-		bme280Control(hi2c, sBme280Device, OVER_EN_X_1, OVER_EN_X_1, OVER_EN_X_1, NORMAL);
+		bme280Control(hi2c, bme280Device, OVER_EN_X_1, OVER_EN_X_1, OVER_EN_X_1, NORMAL);
  8004c44:	2303      	movs	r3, #3
  8004c46:	9301      	str	r3, [sp, #4]
  8004c48:	2301      	movs	r3, #1
@@ -11422,7 +11422,7 @@ CommStatus bme280Init(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Device)
 
 08004c6c <bme280CheckCommunication>:
 
-CommStatus bme280CheckCommunication(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Device)
+CommStatus bme280CheckCommunication(I2C_HandleTypeDef *hi2c, Bme280DeviceData *bme280Device)
 {
  8004c6c:	b580      	push	{r7, lr}
  8004c6e:	b084      	sub	sp, #16
@@ -11435,7 +11435,7 @@ CommStatus bme280CheckCommunication(I2C_HandleTypeDef *hi2c, Bme280DeviceData *s
 	uint32_t ui32CommunicationTrials = 5;
  8004c7a:	2305      	movs	r3, #5
  8004c7c:	60bb      	str	r3, [r7, #8]
-	if (HAL_I2C_IsDeviceReady(hi2c, sBme280Device->ui8Address, ui32CommunicationTrials, ui32TimeoutI2C) == HAL_OK)
+	if (HAL_I2C_IsDeviceReady(hi2c, bme280Device->address, ui32CommunicationTrials, timeoutI2C) == HAL_OK)
  8004c7e:	683b      	ldr	r3, [r7, #0]
  8004c80:	785b      	ldrb	r3, [r3, #1]
  8004c82:	b299      	uxth	r1, r3
@@ -11463,7 +11463,7 @@ CommStatus bme280CheckCommunication(I2C_HandleTypeDef *hi2c, Bme280DeviceData *s
 
 08004ca8 <bme280GetCoefficients>:
 
-void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Device)
+void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *bme280Device)
 {
  8004ca8:	b5b0      	push	{r4, r5, r7, lr}
  8004caa:	b08a      	sub	sp, #40	; 0x28
@@ -11490,7 +11490,7 @@ void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Dev
  8004ccc:	777b      	strb	r3, [r7, #29]
 
 	// Get temperature coefficients
-	HAL_I2C_Master_Transmit(hi2c, sBme280Device->ui8Address, &sBme280Reg.ui8DigT1T3, sizeof(sBme280Reg.ui8DigT1T3), ui32TimeoutI2C);
+	HAL_I2C_Master_Transmit(hi2c, bme280Device->address, &bme280Reg.digT1T3, sizeof(bme280Reg.digT1T3), timeoutI2C);
  8004cce:	683b      	ldr	r3, [r7, #0]
  8004cd0:	785b      	ldrb	r3, [r3, #1]
  8004cd2:	b299      	uxth	r1, r3
@@ -11501,7 +11501,7 @@ void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Dev
  8004cdc:	4a7e      	ldr	r2, [pc, #504]	; (8004ed8 <bme280GetCoefficients+0x230>)
  8004cde:	6878      	ldr	r0, [r7, #4]
  8004ce0:	f7fd fa58 	bl	8002194 <HAL_I2C_Master_Transmit>
-	HAL_I2C_Master_Receive(hi2c, sBme280Device->ui8Address, coefBytes, temperatureCoefQtyBytes, ui32TimeoutI2C);
+	HAL_I2C_Master_Receive(hi2c, bme280Device->address, coefBytes, temperatureCoefQtyBytes, timeoutI2C);
  8004ce4:	683b      	ldr	r3, [r7, #0]
  8004ce6:	785b      	ldrb	r3, [r3, #1]
  8004ce8:	b299      	uxth	r1, r3
@@ -11514,7 +11514,7 @@ void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Dev
  8004cf8:	4603      	mov	r3, r0
  8004cfa:	6878      	ldr	r0, [r7, #4]
  8004cfc:	f7fd fb48 	bl	8002390 <HAL_I2C_Master_Receive>
-	sBme280Device->ui16DigT1 = (coefBytes[1] << 8) | coefBytes[0];
+	bme280Device->digT1 = (coefBytes[1] << 8) | coefBytes[0];
  8004d00:	7a7b      	ldrb	r3, [r7, #9]
  8004d02:	021b      	lsls	r3, r3, #8
  8004d04:	b21a      	sxth	r2, r3
@@ -11525,7 +11525,7 @@ void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Dev
  8004d0e:	b29a      	uxth	r2, r3
  8004d10:	683b      	ldr	r3, [r7, #0]
  8004d12:	815a      	strh	r2, [r3, #10]
-	sBme280Device->i16DigT2  = (coefBytes[3] << 8) | coefBytes[2];
+	bme280Device->digT2  = (coefBytes[3] << 8) | coefBytes[2];
  8004d14:	7afb      	ldrb	r3, [r7, #11]
  8004d16:	021b      	lsls	r3, r3, #8
  8004d18:	b21a      	sxth	r2, r3
@@ -11535,7 +11535,7 @@ void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Dev
  8004d20:	b21a      	sxth	r2, r3
  8004d22:	683b      	ldr	r3, [r7, #0]
  8004d24:	819a      	strh	r2, [r3, #12]
-	sBme280Device->i16DigT3  = (coefBytes[5] << 8) | coefBytes[4];
+	bme280Device->digT3  = (coefBytes[5] << 8) | coefBytes[4];
  8004d26:	7b7b      	ldrb	r3, [r7, #13]
  8004d28:	021b      	lsls	r3, r3, #8
  8004d2a:	b21a      	sxth	r2, r3
@@ -11547,7 +11547,7 @@ void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Dev
  8004d36:	81da      	strh	r2, [r3, #14]
 
 	// Get pressure coefficients
-	HAL_I2C_Master_Transmit(hi2c, sBme280Device->ui8Address, &sBme280Reg.ui8DigP1P9, sizeof(sBme280Reg.ui8DigP1P9), ui32TimeoutI2C);
+	HAL_I2C_Master_Transmit(hi2c, bme280Device->address, &bme280Reg.digP1P9, sizeof(bme280Reg.digP1P9), timeoutI2C);
  8004d38:	683b      	ldr	r3, [r7, #0]
  8004d3a:	785b      	ldrb	r3, [r3, #1]
  8004d3c:	b299      	uxth	r1, r3
@@ -11558,7 +11558,7 @@ void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Dev
  8004d46:	4a65      	ldr	r2, [pc, #404]	; (8004edc <bme280GetCoefficients+0x234>)
  8004d48:	6878      	ldr	r0, [r7, #4]
  8004d4a:	f7fd fa23 	bl	8002194 <HAL_I2C_Master_Transmit>
-	HAL_I2C_Master_Receive(hi2c, sBme280Device->ui8Address, coefBytes, pressureCoefQtyBytes, ui32TimeoutI2C);
+	HAL_I2C_Master_Receive(hi2c, bme280Device->address, coefBytes, pressureCoefQtyBytes, timeoutI2C);
  8004d4e:	683b      	ldr	r3, [r7, #0]
  8004d50:	785b      	ldrb	r3, [r3, #1]
  8004d52:	b299      	uxth	r1, r3
@@ -11571,7 +11571,7 @@ void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Dev
  8004d62:	4603      	mov	r3, r0
  8004d64:	6878      	ldr	r0, [r7, #4]
  8004d66:	f7fd fb13 	bl	8002390 <HAL_I2C_Master_Receive>
-	sBme280Device->ui16DigP1 = (coefBytes[1] << 8) | coefBytes[0];
+	bme280Device->digP1 = (coefBytes[1] << 8) | coefBytes[0];
  8004d6a:	7a7b      	ldrb	r3, [r7, #9]
  8004d6c:	021b      	lsls	r3, r3, #8
  8004d6e:	b21a      	sxth	r2, r3
@@ -11582,7 +11582,7 @@ void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Dev
  8004d78:	b29a      	uxth	r2, r3
  8004d7a:	683b      	ldr	r3, [r7, #0]
  8004d7c:	821a      	strh	r2, [r3, #16]
-	sBme280Device->i16DigP2  = (coefBytes[3] << 8) | coefBytes[2];
+	bme280Device->digP2  = (coefBytes[3] << 8) | coefBytes[2];
  8004d7e:	7afb      	ldrb	r3, [r7, #11]
  8004d80:	021b      	lsls	r3, r3, #8
  8004d82:	b21a      	sxth	r2, r3
@@ -11592,7 +11592,7 @@ void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Dev
  8004d8a:	b21a      	sxth	r2, r3
  8004d8c:	683b      	ldr	r3, [r7, #0]
  8004d8e:	825a      	strh	r2, [r3, #18]
-	sBme280Device->i16DigP3  = (coefBytes[5] << 8) | coefBytes[4];
+	bme280Device->digP3  = (coefBytes[5] << 8) | coefBytes[4];
  8004d90:	7b7b      	ldrb	r3, [r7, #13]
  8004d92:	021b      	lsls	r3, r3, #8
  8004d94:	b21a      	sxth	r2, r3
@@ -11602,7 +11602,7 @@ void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Dev
  8004d9c:	b21a      	sxth	r2, r3
  8004d9e:	683b      	ldr	r3, [r7, #0]
  8004da0:	829a      	strh	r2, [r3, #20]
-	sBme280Device->i16DigP4  = (coefBytes[7] << 8) | coefBytes[6];
+	bme280Device->digP4  = (coefBytes[7] << 8) | coefBytes[6];
  8004da2:	7bfb      	ldrb	r3, [r7, #15]
  8004da4:	021b      	lsls	r3, r3, #8
  8004da6:	b21a      	sxth	r2, r3
@@ -11612,7 +11612,7 @@ void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Dev
  8004dae:	b21a      	sxth	r2, r3
  8004db0:	683b      	ldr	r3, [r7, #0]
  8004db2:	82da      	strh	r2, [r3, #22]
-	sBme280Device->i16DigP5  = (coefBytes[9] << 8) | coefBytes[8];
+	bme280Device->digP5  = (coefBytes[9] << 8) | coefBytes[8];
  8004db4:	7c7b      	ldrb	r3, [r7, #17]
  8004db6:	021b      	lsls	r3, r3, #8
  8004db8:	b21a      	sxth	r2, r3
@@ -11622,7 +11622,7 @@ void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Dev
  8004dc0:	b21a      	sxth	r2, r3
  8004dc2:	683b      	ldr	r3, [r7, #0]
  8004dc4:	831a      	strh	r2, [r3, #24]
-	sBme280Device->i16DigP6  = (coefBytes[11] << 8) | coefBytes[10];
+	bme280Device->digP6  = (coefBytes[11] << 8) | coefBytes[10];
  8004dc6:	7cfb      	ldrb	r3, [r7, #19]
  8004dc8:	021b      	lsls	r3, r3, #8
  8004dca:	b21a      	sxth	r2, r3
@@ -11632,7 +11632,7 @@ void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Dev
  8004dd2:	b21a      	sxth	r2, r3
  8004dd4:	683b      	ldr	r3, [r7, #0]
  8004dd6:	835a      	strh	r2, [r3, #26]
-	sBme280Device->i16DigP7  = (coefBytes[13] << 8) | coefBytes[12];
+	bme280Device->digP7  = (coefBytes[13] << 8) | coefBytes[12];
  8004dd8:	7d7b      	ldrb	r3, [r7, #21]
  8004dda:	021b      	lsls	r3, r3, #8
  8004ddc:	b21a      	sxth	r2, r3
@@ -11642,7 +11642,7 @@ void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Dev
  8004de4:	b21a      	sxth	r2, r3
  8004de6:	683b      	ldr	r3, [r7, #0]
  8004de8:	839a      	strh	r2, [r3, #28]
-	sBme280Device->i16DigP8  = (coefBytes[15] << 8) | coefBytes[14];
+	bme280Device->digP8  = (coefBytes[15] << 8) | coefBytes[14];
  8004dea:	7dfb      	ldrb	r3, [r7, #23]
  8004dec:	021b      	lsls	r3, r3, #8
  8004dee:	b21a      	sxth	r2, r3
@@ -11652,7 +11652,7 @@ void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Dev
  8004df6:	b21a      	sxth	r2, r3
  8004df8:	683b      	ldr	r3, [r7, #0]
  8004dfa:	83da      	strh	r2, [r3, #30]
-	sBme280Device->i16DigP9  = (coefBytes[17] << 8) | coefBytes[16];
+	bme280Device->digP9  = (coefBytes[17] << 8) | coefBytes[16];
  8004dfc:	7e7b      	ldrb	r3, [r7, #25]
  8004dfe:	021b      	lsls	r3, r3, #8
  8004e00:	b21a      	sxth	r2, r3
@@ -11664,7 +11664,7 @@ void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Dev
  8004e0c:	841a      	strh	r2, [r3, #32]
 
 	// Get humidity coefficients
-	HAL_I2C_Master_Transmit(hi2c, sBme280Device->ui8Address, &sBme280Reg.ui8DigH1, sizeof(sBme280Reg.ui8DigH1), ui32TimeoutI2C);
+	HAL_I2C_Master_Transmit(hi2c, bme280Device->address, &bme280Reg.digH1, sizeof(bme280Reg.digH1), timeoutI2C);
  8004e0e:	683b      	ldr	r3, [r7, #0]
  8004e10:	785b      	ldrb	r3, [r3, #1]
  8004e12:	b299      	uxth	r1, r3
@@ -11675,7 +11675,7 @@ void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Dev
  8004e1c:	4a30      	ldr	r2, [pc, #192]	; (8004ee0 <bme280GetCoefficients+0x238>)
  8004e1e:	6878      	ldr	r0, [r7, #4]
  8004e20:	f7fd f9b8 	bl	8002194 <HAL_I2C_Master_Transmit>
-	HAL_I2C_Master_Receive(hi2c, sBme280Device->ui8Address, coefBytes, 1, ui32TimeoutI2C);
+	HAL_I2C_Master_Receive(hi2c, bme280Device->address, coefBytes, 1, timeoutI2C);
  8004e24:	683b      	ldr	r3, [r7, #0]
  8004e26:	785b      	ldrb	r3, [r3, #1]
  8004e28:	b299      	uxth	r1, r3
@@ -11686,11 +11686,11 @@ void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Dev
  8004e34:	2301      	movs	r3, #1
  8004e36:	6878      	ldr	r0, [r7, #4]
  8004e38:	f7fd faaa 	bl	8002390 <HAL_I2C_Master_Receive>
-	sBme280Device->ui8DigH1 = coefBytes[0];
+	bme280Device->digH1 = coefBytes[0];
  8004e3c:	7a3a      	ldrb	r2, [r7, #8]
  8004e3e:	683b      	ldr	r3, [r7, #0]
  8004e40:	f883 2022 	strb.w	r2, [r3, #34]	; 0x22
-	HAL_I2C_Master_Transmit(hi2c, sBme280Device->ui8Address, &sBme280Reg.ui8DigH2H6, sizeof(sBme280Reg.ui8DigH2H6), ui32TimeoutI2C);
+	HAL_I2C_Master_Transmit(hi2c, bme280Device->address, &bme280Reg.digH2H6, sizeof(bme280Reg.digH2H6), timeoutI2C);
  8004e44:	683b      	ldr	r3, [r7, #0]
  8004e46:	785b      	ldrb	r3, [r3, #1]
  8004e48:	b299      	uxth	r1, r3
@@ -11701,7 +11701,7 @@ void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Dev
  8004e52:	4a24      	ldr	r2, [pc, #144]	; (8004ee4 <bme280GetCoefficients+0x23c>)
  8004e54:	6878      	ldr	r0, [r7, #4]
  8004e56:	f7fd f99d 	bl	8002194 <HAL_I2C_Master_Transmit>
-	HAL_I2C_Master_Receive(hi2c, sBme280Device->ui8Address, coefBytes, humidityCoefQtyBytes, ui32TimeoutI2C);
+	HAL_I2C_Master_Receive(hi2c, bme280Device->address, coefBytes, humidityCoefQtyBytes, timeoutI2C);
  8004e5a:	683b      	ldr	r3, [r7, #0]
  8004e5c:	785b      	ldrb	r3, [r3, #1]
  8004e5e:	b299      	uxth	r1, r3
@@ -11714,7 +11714,7 @@ void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Dev
  8004e6e:	4603      	mov	r3, r0
  8004e70:	6878      	ldr	r0, [r7, #4]
  8004e72:	f7fd fa8d 	bl	8002390 <HAL_I2C_Master_Receive>
-	sBme280Device->i16DigH2 = (coefBytes[1] << 8) | coefBytes[0];
+	bme280Device->digH2 = (coefBytes[1] << 8) | coefBytes[0];
  8004e76:	7a7b      	ldrb	r3, [r7, #9]
  8004e78:	021b      	lsls	r3, r3, #8
  8004e7a:	b21a      	sxth	r2, r3
@@ -11724,11 +11724,11 @@ void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Dev
  8004e82:	b21a      	sxth	r2, r3
  8004e84:	683b      	ldr	r3, [r7, #0]
  8004e86:	849a      	strh	r2, [r3, #36]	; 0x24
-	sBme280Device->ui8DigH3 = coefBytes[2];
+	bme280Device->digH3 = coefBytes[2];
  8004e88:	7aba      	ldrb	r2, [r7, #10]
  8004e8a:	683b      	ldr	r3, [r7, #0]
  8004e8c:	f883 2026 	strb.w	r2, [r3, #38]	; 0x26
-	sBme280Device->i16DigH4 = (coefBytes[3] << 4) | (coefBytes[4] & 0x0F);
+	bme280Device->digH4 = (coefBytes[3] << 4) | (coefBytes[4] & 0x0F);
  8004e90:	7afb      	ldrb	r3, [r7, #11]
  8004e92:	011b      	lsls	r3, r3, #4
  8004e94:	b21a      	sxth	r2, r3
@@ -11740,7 +11740,7 @@ void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Dev
  8004ea2:	b21a      	sxth	r2, r3
  8004ea4:	683b      	ldr	r3, [r7, #0]
  8004ea6:	851a      	strh	r2, [r3, #40]	; 0x28
-	sBme280Device->i16DigH5 = ((coefBytes[4] & 0xF0) >> 4) | (coefBytes[5] << 4);
+	bme280Device->digH5 = ((coefBytes[4] & 0xF0) >> 4) | (coefBytes[5] << 4);
  8004ea8:	7b3b      	ldrb	r3, [r7, #12]
  8004eaa:	091b      	lsrs	r3, r3, #4
  8004eac:	b2db      	uxtb	r3, r3
@@ -11752,7 +11752,7 @@ void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Dev
  8004eb8:	b21a      	sxth	r2, r3
  8004eba:	683b      	ldr	r3, [r7, #0]
  8004ebc:	855a      	strh	r2, [r3, #42]	; 0x2a
-	sBme280Device->i8DigH6  = coefBytes[6];
+	bme280Device->digH6  = coefBytes[6];
  8004ebe:	7bbb      	ldrb	r3, [r7, #14]
  8004ec0:	b25a      	sxtb	r2, r3
  8004ec2:	683b      	ldr	r3, [r7, #0]
@@ -11771,7 +11771,7 @@ void bme280GetCoefficients(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Dev
 
 08004ee8 <bme280CheckId>:
 
-uint8_t bme280CheckId(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Device)
+uint8_t bme280CheckId(I2C_HandleTypeDef *hi2c, Bme280DeviceData *bme280Device)
 {
  8004ee8:	b580      	push	{r7, lr}
  8004eea:	b086      	sub	sp, #24
@@ -11781,7 +11781,7 @@ uint8_t bme280CheckId(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Device)
 	uint8_t id = 0;
  8004ef2:	2300      	movs	r3, #0
  8004ef4:	73fb      	strb	r3, [r7, #15]
-	HAL_I2C_Master_Transmit(hi2c, sBme280Device->ui8Address, &sBme280Reg.ui8Id, sizeof(sBme280Reg.ui8Id), ui32TimeoutI2C);
+	HAL_I2C_Master_Transmit(hi2c, bme280Device->address, &bme280Reg.id, sizeof(bme280Reg.id), timeoutI2C);
  8004ef6:	683b      	ldr	r3, [r7, #0]
  8004ef8:	785b      	ldrb	r3, [r3, #1]
  8004efa:	b299      	uxth	r1, r3
@@ -11792,7 +11792,7 @@ uint8_t bme280CheckId(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Device)
  8004f04:	4a0b      	ldr	r2, [pc, #44]	; (8004f34 <bme280CheckId+0x4c>)
  8004f06:	6878      	ldr	r0, [r7, #4]
  8004f08:	f7fd f944 	bl	8002194 <HAL_I2C_Master_Transmit>
-	HAL_I2C_Master_Receive(hi2c, sBme280Device->ui8Address, &id, sizeof(id), ui32TimeoutI2C);
+	HAL_I2C_Master_Receive(hi2c, bme280Device->address, &id, sizeof(id), timeoutI2C);
  8004f0c:	683b      	ldr	r3, [r7, #0]
  8004f0e:	785b      	ldrb	r3, [r3, #1]
  8004f10:	b299      	uxth	r1, r3
@@ -11816,10 +11816,10 @@ uint8_t bme280CheckId(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Device)
 
 08004f38 <bme280Control>:
 {
-	HAL_I2C_Master_Transmit(hi2c, sBme280Device->ui8Address, sBme280Reg.ui8Reset, sizeof(sBme280Reg.ui8Reset), ui32TimeoutI2C);
+	HAL_I2C_Master_Transmit(hi2c, bme280Device->address, bme280Reg.reset, sizeof(bme280Reg.reset), timeoutI2C);
 }
 
-void bme280Control(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Device, Oversampling hum, Oversampling press, Oversampling temp, Mode mode)
+void bme280Control(I2C_HandleTypeDef *hi2c, Bme280DeviceData *bme280Device, Oversampling hum, Oversampling press, Oversampling temp, Mode mode)
 {
  8004f38:	b580      	push	{r7, lr}
  8004f3a:	b08a      	sub	sp, #40	; 0x28
@@ -11851,7 +11851,7 @@ void bme280Control(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Device, Ove
 
 	uint8_t ctrl_hum[2] =
 	{
-			sBme280Reg.ui8CtrlHum,
+			bme280Reg.ctrlHum,
  8004f72:	4b19      	ldr	r3, [pc, #100]	; (8004fd8 <bme280Control+0xa0>)
  8004f74:	78db      	ldrb	r3, [r3, #3]
 	uint8_t ctrl_hum[2] =
@@ -11863,7 +11863,7 @@ void bme280Control(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Device, Ove
 
 	uint8_t ctrl_meas[2] =
 	{
-			sBme280Reg.ui8CtrlMeas,
+			bme280Reg.ctrlMeas,
  8004f7c:	4b16      	ldr	r3, [pc, #88]	; (8004fd8 <bme280Control+0xa0>)
  8004f7e:	795b      	ldrb	r3, [r3, #5]
 	uint8_t ctrl_meas[2] =
@@ -11885,7 +11885,7 @@ void bme280Control(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Device, Ove
  8004f9c:	757b      	strb	r3, [r7, #21]
 	};
 
-	HAL_I2C_Master_Transmit(hi2c, sBme280Device->ui8Address, ctrl_hum, sizeof(ctrl_hum), ui32TimeoutI2C);
+	HAL_I2C_Master_Transmit(hi2c, bme280Device->address, ctrl_hum, sizeof(ctrl_hum), timeoutI2C);
  8004f9e:	68bb      	ldr	r3, [r7, #8]
  8004fa0:	785b      	ldrb	r3, [r3, #1]
  8004fa2:	b299      	uxth	r1, r3
@@ -11896,7 +11896,7 @@ void bme280Control(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Device, Ove
  8004fae:	2302      	movs	r3, #2
  8004fb0:	68f8      	ldr	r0, [r7, #12]
  8004fb2:	f7fd f8ef 	bl	8002194 <HAL_I2C_Master_Transmit>
-	HAL_I2C_Master_Transmit(hi2c, sBme280Device->ui8Address, ctrl_meas, sizeof(ctrl_meas), ui32TimeoutI2C);
+	HAL_I2C_Master_Transmit(hi2c, bme280Device->address, ctrl_meas, sizeof(ctrl_meas), timeoutI2C);
  8004fb6:	68bb      	ldr	r3, [r7, #8]
  8004fb8:	785b      	ldrb	r3, [r3, #1]
  8004fba:	b299      	uxth	r1, r3
@@ -11918,7 +11918,7 @@ void bme280Control(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Device, Ove
 
 08004fe0 <bme280GetStatus>:
 
-MeasuringStatus bme280GetStatus(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Device)
+MeasuringStatus bme280GetStatus(I2C_HandleTypeDef *hi2c, Bme280DeviceData *bme280Device)
 {
  8004fe0:	b580      	push	{r7, lr}
  8004fe2:	b086      	sub	sp, #24
@@ -11928,7 +11928,7 @@ MeasuringStatus bme280GetStatus(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme2
 	MeasuringStatus status = AVAILABLE;
  8004fea:	2300      	movs	r3, #0
  8004fec:	73fb      	strb	r3, [r7, #15]
-	HAL_I2C_Master_Transmit(hi2c, sBme280Device->ui8Address, &sBme280Reg.ui8Status, sizeof(sBme280Reg.ui8Status), ui32TimeoutI2C);
+	HAL_I2C_Master_Transmit(hi2c, bme280Device->address, &bme280Reg.status, sizeof(bme280Reg.status), timeoutI2C);
  8004fee:	683b      	ldr	r3, [r7, #0]
  8004ff0:	785b      	ldrb	r3, [r3, #1]
  8004ff2:	b299      	uxth	r1, r3
@@ -11939,7 +11939,7 @@ MeasuringStatus bme280GetStatus(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme2
  8004ffc:	4a0b      	ldr	r2, [pc, #44]	; (800502c <bme280GetStatus+0x4c>)
  8004ffe:	6878      	ldr	r0, [r7, #4]
  8005000:	f7fd f8c8 	bl	8002194 <HAL_I2C_Master_Transmit>
-	HAL_I2C_Master_Receive(hi2c, sBme280Device->ui8Address, &status, sizeof(status), ui32TimeoutI2C);
+	HAL_I2C_Master_Receive(hi2c, bme280Device->address, &status, sizeof(status), timeoutI2C);
  8005004:	683b      	ldr	r3, [r7, #0]
  8005006:	785b      	ldrb	r3, [r3, #1]
  8005008:	b299      	uxth	r1, r3
@@ -11963,7 +11963,7 @@ MeasuringStatus bme280GetStatus(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme2
 
 08005030 <bme280Config>:
 
-void bme280Config(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Device, TimeStandby timeStandby, FilterCoef filterCoef)
+void bme280Config(I2C_HandleTypeDef *hi2c, Bme280DeviceData *bme280Device, TimeStandby timeStandby, FilterCoef filterCoef)
 {
  8005030:	b580      	push	{r7, lr}
  8005032:	b088      	sub	sp, #32
@@ -11990,7 +11990,7 @@ void bme280Config(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Device, Time
 
 	uint8_t config[2] =
 	{
-			sBme280Reg.ui8Config,
+			bme280Reg.config,
  800505a:	4b15      	ldr	r3, [pc, #84]	; (80050b0 <bme280Config+0x80>)
  800505c:	799b      	ldrb	r3, [r3, #6]
 	uint8_t config[2] =
@@ -12012,7 +12012,7 @@ void bme280Config(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Device, Time
  800507a:	747b      	strb	r3, [r7, #17]
 	};
 
-	bme280Control(hi2c, sBme280Device, OVER_SKIPPED, OVER_SKIPPED, OVER_SKIPPED, SLEEP);
+	bme280Control(hi2c, bme280Device, OVER_SKIPPED, OVER_SKIPPED, OVER_SKIPPED, SLEEP);
  800507c:	2300      	movs	r3, #0
  800507e:	9301      	str	r3, [sp, #4]
  8005080:	2300      	movs	r3, #0
@@ -12022,7 +12022,7 @@ void bme280Config(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Device, Time
  8005088:	68b9      	ldr	r1, [r7, #8]
  800508a:	68f8      	ldr	r0, [r7, #12]
  800508c:	f7ff ff54 	bl	8004f38 <bme280Control>
-	HAL_I2C_Master_Transmit(hi2c, sBme280Device->ui8Address, config, sizeof(config), ui32TimeoutI2C);
+	HAL_I2C_Master_Transmit(hi2c, bme280Device->address, config, sizeof(config), timeoutI2C);
  8005090:	68bb      	ldr	r3, [r7, #8]
  8005092:	785b      	ldrb	r3, [r3, #1]
  8005094:	b299      	uxth	r1, r3
@@ -12046,7 +12046,7 @@ void bme280Config(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Device, Time
  * Returns temperature in degC.
  * Output value of "5123" equals 51.23 degC
  */
-int32_t bme280ReadTemperature(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Device)
+int32_t bme280ReadTemperature(I2C_HandleTypeDef *hi2c, Bme280DeviceData *bme280Device)
 {
  80050b8:	b580      	push	{r7, lr}
  80050ba:	b08a      	sub	sp, #40	; 0x28
@@ -12069,7 +12069,7 @@ int32_t bme280ReadTemperature(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280
  80050d8:	0c12      	lsrs	r2, r2, #16
  80050da:	701a      	strb	r2, [r3, #0]
 
-	HAL_I2C_Master_Transmit(hi2c, sBme280Device->ui8Address, &sBme280Reg.ui8Temp, sizeof(sBme280Reg.ui8Temp), ui32TimeoutI2C);
+	HAL_I2C_Master_Transmit(hi2c, bme280Device->address, &bme280Reg.temp, sizeof(bme280Reg.temp), timeoutI2C);
  80050dc:	683b      	ldr	r3, [r7, #0]
  80050de:	785b      	ldrb	r3, [r3, #1]
  80050e0:	b299      	uxth	r1, r3
@@ -12080,7 +12080,7 @@ int32_t bme280ReadTemperature(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280
  80050ea:	4a32      	ldr	r2, [pc, #200]	; (80051b4 <bme280ReadTemperature+0xfc>)
  80050ec:	6878      	ldr	r0, [r7, #4]
  80050ee:	f7fd f851 	bl	8002194 <HAL_I2C_Master_Transmit>
-	HAL_I2C_Master_Receive(hi2c, sBme280Device->ui8Address, dataBytes, temperatureDataQtyBytes, ui32TimeoutI2C);
+	HAL_I2C_Master_Receive(hi2c, bme280Device->address, dataBytes, temperatureDataQtyBytes, timeoutI2C);
  80050f2:	683b      	ldr	r3, [r7, #0]
  80050f4:	785b      	ldrb	r3, [r3, #1]
  80050f6:	b299      	uxth	r1, r3
@@ -12093,20 +12093,20 @@ int32_t bme280ReadTemperature(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280
  8005108:	4603      	mov	r3, r0
  800510a:	6878      	ldr	r0, [r7, #4]
  800510c:	f7fd f940 	bl	8002390 <HAL_I2C_Master_Receive>
-	sBme280Device->ui8TempMsb = dataBytes[0];
+	bme280Device->tempMsb = dataBytes[0];
  8005110:	7a3a      	ldrb	r2, [r7, #8]
  8005112:	683b      	ldr	r3, [r7, #0]
  8005114:	715a      	strb	r2, [r3, #5]
-	sBme280Device->ui8TempLsb = dataBytes[1];
+	bme280Device->tempLsb = dataBytes[1];
  8005116:	7a7a      	ldrb	r2, [r7, #9]
  8005118:	683b      	ldr	r3, [r7, #0]
  800511a:	719a      	strb	r2, [r3, #6]
-	sBme280Device->ui8TempXlsb = dataBytes[2];
+	bme280Device->tempXlsb = dataBytes[2];
  800511c:	7aba      	ldrb	r2, [r7, #10]
  800511e:	683b      	ldr	r3, [r7, #0]
  8005120:	71da      	strb	r2, [r3, #7]
 
-	int32_t adc_T = (sBme280Device->ui8TempMsb << 12) | (sBme280Device->ui8TempLsb << 4) | (sBme280Device->ui8TempXlsb >> 4);
+	int32_t adc_T = (bme280Device->tempMsb << 12) | (bme280Device->tempLsb << 4) | (bme280Device->tempXlsb >> 4);
  8005122:	683b      	ldr	r3, [r7, #0]
  8005124:	795b      	ldrb	r3, [r3, #5]
  8005126:	031a      	lsls	r2, r3, #12
@@ -12120,7 +12120,7 @@ int32_t bme280ReadTemperature(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280
  8005136:	b2d2      	uxtb	r2, r2
  8005138:	4313      	orrs	r3, r2
  800513a:	617b      	str	r3, [r7, #20]
-	int32_t var1 = ((((adc_T >> 3) - ((int32_t) sBme280Device->ui16DigT1 << 1))) * ((int32_t) sBme280Device->i16DigT2)) >> 11;
+	int32_t var1 = ((((adc_T >> 3) - ((int32_t) bme280Device->digT1 << 1))) * ((int32_t) bme280Device->digT2)) >> 11;
  800513c:	697b      	ldr	r3, [r7, #20]
  800513e:	10da      	asrs	r2, r3, #3
  8005140:	683b      	ldr	r3, [r7, #0]
@@ -12132,7 +12132,7 @@ int32_t bme280ReadTemperature(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280
  800514e:	fb02 f303 	mul.w	r3, r2, r3
  8005152:	12db      	asrs	r3, r3, #11
  8005154:	613b      	str	r3, [r7, #16]
-	int32_t var2 = (((((adc_T >> 4) - ((int32_t) sBme280Device->ui16DigT1)) * ((adc_T >> 4) - ((int32_t) sBme280Device->ui16DigT1))) >> 12) * ((int32_t) sBme280Device->i16DigT3)) >> 14;
+	int32_t var2 = (((((adc_T >> 4) - ((int32_t) bme280Device->digT1)) * ((adc_T >> 4) - ((int32_t) bme280Device->digT1))) >> 12) * ((int32_t) bme280Device->digT3)) >> 14;
  8005156:	697b      	ldr	r3, [r7, #20]
  8005158:	111b      	asrs	r3, r3, #4
  800515a:	683a      	ldr	r2, [r7, #0]
@@ -12150,13 +12150,13 @@ int32_t bme280ReadTemperature(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280
  8005176:	fb02 f303 	mul.w	r3, r2, r3
  800517a:	139b      	asrs	r3, r3, #14
  800517c:	60fb      	str	r3, [r7, #12]
-	i32FineTemperature = var1 + var2;
+	fineTemperature = var1 + var2;
  800517e:	693a      	ldr	r2, [r7, #16]
  8005180:	68fb      	ldr	r3, [r7, #12]
  8005182:	4413      	add	r3, r2
  8005184:	4a0c      	ldr	r2, [pc, #48]	; (80051b8 <bme280ReadTemperature+0x100>)
  8005186:	6013      	str	r3, [r2, #0]
-	sBme280Device->i32Temperature = (i32FineTemperature * 5 + 128) >> 8;
+	bme280Device->temperature = (fineTemperature * 5 + 128) >> 8;
  8005188:	4b0b      	ldr	r3, [pc, #44]	; (80051b8 <bme280ReadTemperature+0x100>)
  800518a:	681a      	ldr	r2, [r3, #0]
  800518c:	4613      	mov	r3, r2
@@ -12166,7 +12166,7 @@ int32_t bme280ReadTemperature(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280
  8005194:	121a      	asrs	r2, r3, #8
  8005196:	683b      	ldr	r3, [r7, #0]
  8005198:	631a      	str	r2, [r3, #48]	; 0x30
-	temperature_degC_x_100 = sBme280Device->i32Temperature;
+	temperature_degC_x_100 = bme280Device->temperature;
  800519a:	683b      	ldr	r3, [r7, #0]
  800519c:	6b1b      	ldr	r3, [r3, #48]	; 0x30
  800519e:	61fb      	str	r3, [r7, #28]
@@ -12189,7 +12189,7 @@ int32_t bme280ReadTemperature(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280
 /**
  * Returns pressure in Pa
  */
-uint32_t bme280ReadPressure(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Device)
+uint32_t bme280ReadPressure(I2C_HandleTypeDef *hi2c, Bme280DeviceData *bme280Device)
 {
  80051bc:	e92d 4fb0 	stmdb	sp!, {r4, r5, r7, r8, r9, sl, fp, lr}
  80051c0:	b0d4      	sub	sp, #336	; 0x150
@@ -12212,7 +12212,7 @@ uint32_t bme280ReadPressure(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280De
  80051e6:	0c0b      	lsrs	r3, r1, #16
  80051e8:	7013      	strb	r3, [r2, #0]
 
-	HAL_I2C_Master_Transmit(hi2c, sBme280Device->ui8Address, &sBme280Reg.ui8Press, sizeof(sBme280Reg.ui8Press), ui32TimeoutI2C);
+	HAL_I2C_Master_Transmit(hi2c, bme280Device->address, &bme280Reg.press, sizeof(bme280Reg.press), timeoutI2C);
  80051ea:	f8d7 3110 	ldr.w	r3, [r7, #272]	; 0x110
  80051ee:	785b      	ldrb	r3, [r3, #1]
  80051f0:	b299      	uxth	r1, r3
@@ -12223,7 +12223,7 @@ uint32_t bme280ReadPressure(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280De
  80051fa:	4acc      	ldr	r2, [pc, #816]	; (800552c <bme280ReadPressure+0x370>)
  80051fc:	f8d7 0114 	ldr.w	r0, [r7, #276]	; 0x114
  8005200:	f7fc ffc8 	bl	8002194 <HAL_I2C_Master_Transmit>
-	HAL_I2C_Master_Receive(hi2c, sBme280Device->ui8Address, dataBytes, pressureDataQtyBytes, ui32TimeoutI2C);
+	HAL_I2C_Master_Receive(hi2c, bme280Device->address, dataBytes, pressureDataQtyBytes, timeoutI2C);
  8005204:	f8d7 3110 	ldr.w	r3, [r7, #272]	; 0x110
  8005208:	785b      	ldrb	r3, [r3, #1]
  800520a:	b298      	uxth	r0, r3
@@ -12237,20 +12237,20 @@ uint32_t bme280ReadPressure(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280De
  800521e:	4601      	mov	r1, r0
  8005220:	f8d7 0114 	ldr.w	r0, [r7, #276]	; 0x114
  8005224:	f7fd f8b4 	bl	8002390 <HAL_I2C_Master_Receive>
-	sBme280Device->ui8PressMsb = dataBytes[0];
+	bme280Device->pressMsb = dataBytes[0];
  8005228:	f897 311c 	ldrb.w	r3, [r7, #284]	; 0x11c
  800522c:	f8d7 2110 	ldr.w	r2, [r7, #272]	; 0x110
  8005230:	7093      	strb	r3, [r2, #2]
-	sBme280Device->ui8PressLsb = dataBytes[1];
+	bme280Device->pressLsb = dataBytes[1];
  8005232:	f897 311d 	ldrb.w	r3, [r7, #285]	; 0x11d
  8005236:	f8d7 2110 	ldr.w	r2, [r7, #272]	; 0x110
  800523a:	70d3      	strb	r3, [r2, #3]
-	sBme280Device->ui8PressXlsb = dataBytes[2];
+	bme280Device->pressXlsb = dataBytes[2];
  800523c:	f897 311e 	ldrb.w	r3, [r7, #286]	; 0x11e
  8005240:	f8d7 2110 	ldr.w	r2, [r7, #272]	; 0x110
  8005244:	7113      	strb	r3, [r2, #4]
 
-	int32_t adc_P = (sBme280Device->ui8PressMsb << 12) | (sBme280Device->ui8PressLsb << 4) | (sBme280Device->ui8PressXlsb >> 4);
+	int32_t adc_P = (bme280Device->pressMsb << 12) | (bme280Device->pressLsb << 4) | (bme280Device->pressXlsb >> 4);
  8005246:	f8d7 3110 	ldr.w	r3, [r7, #272]	; 0x110
  800524a:	789b      	ldrb	r3, [r3, #2]
  800524c:	031a      	lsls	r2, r3, #12
@@ -12264,11 +12264,11 @@ uint32_t bme280ReadPressure(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280De
  8005260:	b2db      	uxtb	r3, r3
  8005262:	4313      	orrs	r3, r2
  8005264:	f8c7 313c 	str.w	r3, [r7, #316]	; 0x13c
-	bme280ReadTemperature(hi2c, sBme280Device);
+	bme280ReadTemperature(hi2c, bme280Device);
  8005268:	f8d7 1110 	ldr.w	r1, [r7, #272]	; 0x110
  800526c:	f8d7 0114 	ldr.w	r0, [r7, #276]	; 0x114
  8005270:	f7ff ff22 	bl	80050b8 <bme280ReadTemperature>
-	int64_t var1 = ((int64_t) i32FineTemperature) - 128000;
+	int64_t var1 = ((int64_t) fineTemperature) - 128000;
  8005274:	4bae      	ldr	r3, [pc, #696]	; (8005530 <bme280ReadPressure+0x374>)
  8005276:	681b      	ldr	r3, [r3, #0]
  8005278:	17da      	asrs	r2, r3, #31
@@ -12283,7 +12283,7 @@ uint32_t bme280ReadPressure(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280De
  8005294:	657b      	str	r3, [r7, #84]	; 0x54
  8005296:	e9d7 2314 	ldrd	r2, r3, [r7, #80]	; 0x50
  800529a:	e9c7 234c 	strd	r2, r3, [r7, #304]	; 0x130
-	int64_t var2 = var1 * var1 * (int64_t) sBme280Device->i16DigP6;
+	int64_t var2 = var1 * var1 * (int64_t) bme280Device->digP6;
  800529e:	f8d7 2134 	ldr.w	r2, [r7, #308]	; 0x134
  80052a2:	f8d7 3130 	ldr.w	r3, [r7, #304]	; 0x130
  80052a6:	fb03 f102 	mul.w	r1, r3, r2
@@ -12318,7 +12318,7 @@ uint32_t bme280ReadPressure(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280De
  8005304:	e9d7 3436 	ldrd	r3, r4, [r7, #216]	; 0xd8
  8005308:	e9c7 344a 	strd	r3, r4, [r7, #296]	; 0x128
  800530c:	e9c7 344a 	strd	r3, r4, [r7, #296]	; 0x128
-	var2 = var2 + ((var1 * (int64_t) sBme280Device->i16DigP5) << 17);
+	var2 = var2 + ((var1 * (int64_t) bme280Device->digP5) << 17);
  8005310:	f8d7 3110 	ldr.w	r3, [r7, #272]	; 0x110
  8005314:	f9b3 3018 	ldrsh.w	r3, [r3, #24]
  8005318:	b21b      	sxth	r3, r3
@@ -12350,7 +12350,7 @@ uint32_t bme280ReadPressure(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280De
  800536c:	64fb      	str	r3, [r7, #76]	; 0x4c
  800536e:	e9d7 3412 	ldrd	r3, r4, [r7, #72]	; 0x48
  8005372:	e9c7 344a 	strd	r3, r4, [r7, #296]	; 0x128
-	var2 = var2 + (((int64_t) sBme280Device->i16DigP4) << 35);
+	var2 = var2 + (((int64_t) bme280Device->digP4) << 35);
  8005376:	f8d7 3110 	ldr.w	r3, [r7, #272]	; 0x110
  800537a:	f9b3 3016 	ldrsh.w	r3, [r3, #22]
  800537e:	b21b      	sxth	r3, r3
@@ -12369,7 +12369,7 @@ uint32_t bme280ReadPressure(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280De
  80053a4:	647b      	str	r3, [r7, #68]	; 0x44
  80053a6:	e9d7 3410 	ldrd	r3, r4, [r7, #64]	; 0x40
  80053aa:	e9c7 344a 	strd	r3, r4, [r7, #296]	; 0x128
-	var1 = ((var1 * var1 * (int64_t) sBme280Device->i16DigP3) >> 8) + ((var1 * (int64_t) sBme280Device->i16DigP2) << 12);
+	var1 = ((var1 * var1 * (int64_t) bme280Device->digP3) >> 8) + ((var1 * (int64_t) bme280Device->digP2) << 12);
  80053ae:	f8d7 2134 	ldr.w	r2, [r7, #308]	; 0x134
  80053b2:	f8d7 3130 	ldr.w	r3, [r7, #304]	; 0x130
  80053b6:	fb03 f102 	mul.w	r1, r3, r2
@@ -12448,7 +12448,7 @@ uint32_t bme280ReadPressure(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280De
  800549e:	63fb      	str	r3, [r7, #60]	; 0x3c
  80054a0:	e9d7 340e 	ldrd	r3, r4, [r7, #56]	; 0x38
  80054a4:	e9c7 344c 	strd	r3, r4, [r7, #304]	; 0x130
-	var1 = (((((int64_t) 1) << 47) + var1)) * ((int64_t) sBme280Device->ui16DigP1) >> 33;
+	var1 = (((((int64_t) 1) << 47) + var1)) * ((int64_t) bme280Device->digP1) >> 33;
  80054a8:	e9d7 234c 	ldrd	r2, r3, [r7, #304]	; 0x130
  80054ac:	f503 4100 	add.w	r1, r3, #32768	; 0x8000
  80054b0:	f8c7 10a4 	str.w	r1, [r7, #164]	; 0xa4
@@ -12591,7 +12591,7 @@ uint32_t bme280ReadPressure(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280De
  8005630:	4602      	mov	r2, r0
  8005632:	460b      	mov	r3, r1
  8005634:	e9c7 2348 	strd	r2, r3, [r7, #288]	; 0x120
-	var1 = (((int64_t) sBme280Device->i16DigP9) * (p_aux >> 13) * (p_aux >> 13)) >> 25;
+	var1 = (((int64_t) bme280Device->digP9) * (p_aux >> 13) * (p_aux >> 13)) >> 25;
  8005638:	f8d7 3110 	ldr.w	r3, [r7, #272]	; 0x110
  800563c:	f9b3 3020 	ldrsh.w	r3, [r3, #32]
  8005640:	b21b      	sxth	r3, r3
@@ -12648,7 +12648,7 @@ uint32_t bme280ReadPressure(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280De
  80056de:	4629      	mov	r1, r5
  80056e0:	164b      	asrs	r3, r1, #25
  80056e2:	e9c7 234c 	strd	r2, r3, [r7, #304]	; 0x130
-	var2 = (((int64_t) sBme280Device->i16DigP8) * p_aux) >> 19;
+	var2 = (((int64_t) bme280Device->digP8) * p_aux) >> 19;
  80056e6:	f8d7 3110 	ldr.w	r3, [r7, #272]	; 0x110
  80056ea:	f9b3 301e 	ldrsh.w	r3, [r3, #30]
  80056ee:	b21b      	sxth	r3, r3
@@ -12682,7 +12682,7 @@ uint32_t bme280ReadPressure(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280De
  8005744:	4629      	mov	r1, r5
  8005746:	14cb      	asrs	r3, r1, #19
  8005748:	e9c7 234a 	strd	r2, r3, [r7, #296]	; 0x128
-	p_aux = ((p_aux + var1 + var2) >> 8) + (((int64_t) sBme280Device->i16DigP7) << 4);
+	p_aux = ((p_aux + var1 + var2) >> 8) + (((int64_t) bme280Device->digP7) << 4);
  800574c:	e9d7 0148 	ldrd	r0, r1, [r7, #288]	; 0x120
  8005750:	e9d7 234c 	ldrd	r2, r3, [r7, #304]	; 0x130
  8005754:	1884      	adds	r4, r0, r2
@@ -12745,12 +12745,12 @@ uint32_t bme280ReadPressure(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280De
  80057f4:	460b      	mov	r3, r1
  80057f6:	4613      	mov	r3, r2
  80057f8:	f8c7 3144 	str.w	r3, [r7, #324]	; 0x144
-	sBme280Device->ui32Pressure = pressure_Pa;
+	bme280Device->pressure = pressure_Pa;
  80057fc:	f8d7 3110 	ldr.w	r3, [r7, #272]	; 0x110
  8005800:	f8d7 2144 	ldr.w	r2, [r7, #324]	; 0x144
  8005804:	635a      	str	r2, [r3, #52]	; 0x34
 
-	return sBme280Device->ui32Pressure;
+	return bme280Device->pressure;
  8005806:	f8d7 3110 	ldr.w	r3, [r7, #272]	; 0x110
  800580a:	6b5b      	ldr	r3, [r3, #52]	; 0x34
 }
@@ -12764,7 +12764,7 @@ uint32_t bme280ReadPressure(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280De
 /**
  * Returns humidity in %RH
  */
-uint32_t bme280ReadHumidity(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280Device)
+uint32_t bme280ReadHumidity(I2C_HandleTypeDef *hi2c, Bme280DeviceData *bme280Device)
 {
  8005818:	b580      	push	{r7, lr}
  800581a:	b08a      	sub	sp, #40	; 0x28
@@ -12781,7 +12781,7 @@ uint32_t bme280ReadHumidity(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280De
  800582a:	2300      	movs	r3, #0
  800582c:	81bb      	strh	r3, [r7, #12]
 
-	HAL_I2C_Master_Transmit(hi2c, sBme280Device->ui8Address, &sBme280Reg.ui8Hum, sizeof(sBme280Reg.ui8Hum), ui32TimeoutI2C);
+	HAL_I2C_Master_Transmit(hi2c, bme280Device->address, &bme280Reg.hum, sizeof(bme280Reg.hum), timeoutI2C);
  800582e:	683b      	ldr	r3, [r7, #0]
  8005830:	785b      	ldrb	r3, [r3, #1]
  8005832:	b299      	uxth	r1, r3
@@ -12792,7 +12792,7 @@ uint32_t bme280ReadHumidity(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280De
  800583c:	4a45      	ldr	r2, [pc, #276]	; (8005954 <bme280ReadHumidity+0x13c>)
  800583e:	6878      	ldr	r0, [r7, #4]
  8005840:	f7fc fca8 	bl	8002194 <HAL_I2C_Master_Transmit>
-	HAL_I2C_Master_Receive(hi2c, sBme280Device->ui8Address, dataBytes, humidityDataQtyBytes, ui32TimeoutI2C);
+	HAL_I2C_Master_Receive(hi2c, bme280Device->address, dataBytes, humidityDataQtyBytes, timeoutI2C);
  8005844:	683b      	ldr	r3, [r7, #0]
  8005846:	785b      	ldrb	r3, [r3, #1]
  8005848:	b299      	uxth	r1, r3
@@ -12805,16 +12805,16 @@ uint32_t bme280ReadHumidity(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280De
  800585a:	4603      	mov	r3, r0
  800585c:	6878      	ldr	r0, [r7, #4]
  800585e:	f7fc fd97 	bl	8002390 <HAL_I2C_Master_Receive>
-	sBme280Device->ui8HumMsb = dataBytes[0];
+	bme280Device->humMsb = dataBytes[0];
  8005862:	7b3a      	ldrb	r2, [r7, #12]
  8005864:	683b      	ldr	r3, [r7, #0]
  8005866:	721a      	strb	r2, [r3, #8]
-	sBme280Device->ui8HumLsb = dataBytes[1];
+	bme280Device->humLsb = dataBytes[1];
  8005868:	7b7a      	ldrb	r2, [r7, #13]
  800586a:	683b      	ldr	r3, [r7, #0]
  800586c:	725a      	strb	r2, [r3, #9]
 
-	int32_t adc_H = (sBme280Device->ui8HumMsb << 8) | sBme280Device->ui8HumLsb;
+	int32_t adc_H = (bme280Device->humMsb << 8) | bme280Device->humLsb;
  800586e:	683b      	ldr	r3, [r7, #0]
  8005870:	7a1b      	ldrb	r3, [r3, #8]
  8005872:	021b      	lsls	r3, r3, #8
@@ -12822,16 +12822,16 @@ uint32_t bme280ReadHumidity(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280De
  8005876:	7a52      	ldrb	r2, [r2, #9]
  8005878:	4313      	orrs	r3, r2
  800587a:	617b      	str	r3, [r7, #20]
-	bme280ReadTemperature(hi2c, sBme280Device);
+	bme280ReadTemperature(hi2c, bme280Device);
  800587c:	6839      	ldr	r1, [r7, #0]
  800587e:	6878      	ldr	r0, [r7, #4]
  8005880:	f7ff fc1a 	bl	80050b8 <bme280ReadTemperature>
-	int32_t v_x1_u32r = (i32FineTemperature - ((int32_t) 76800));
+	int32_t v_x1_u32r = (fineTemperature - ((int32_t) 76800));
  8005884:	4b34      	ldr	r3, [pc, #208]	; (8005958 <bme280ReadHumidity+0x140>)
  8005886:	681b      	ldr	r3, [r3, #0]
  8005888:	f5a3 3396 	sub.w	r3, r3, #76800	; 0x12c00
  800588c:	613b      	str	r3, [r7, #16]
-	v_x1_u32r = (((((adc_H << 14) - (((int32_t) sBme280Device->i16DigH4) << 20) - (((int32_t) sBme280Device->i16DigH5) * v_x1_u32r)) +
+	v_x1_u32r = (((((adc_H << 14) - (((int32_t) bme280Device->digH4) << 20) - (((int32_t) bme280Device->digH5) * v_x1_u32r)) +
  800588e:	697b      	ldr	r3, [r7, #20]
  8005890:	039a      	lsls	r2, r3, #14
  8005892:	683b      	ldr	r3, [r7, #0]
@@ -12845,7 +12845,7 @@ uint32_t bme280ReadHumidity(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280De
  80058a6:	fb01 f303 	mul.w	r3, r1, r3
  80058aa:	1ad3      	subs	r3, r2, r3
  80058ac:	f503 4380 	add.w	r3, r3, #16384	; 0x4000
-			((int32_t) 16384)) >> 15) * (((((((v_x1_u32r * ((int32_t) sBme280Device->i8DigH6)) >> 10) *
+			((int32_t) 16384)) >> 15) * (((((((v_x1_u32r * ((int32_t) bme280Device->digH6)) >> 10) *
  80058b0:	13db      	asrs	r3, r3, #15
  80058b2:	683a      	ldr	r2, [r7, #0]
  80058b4:	f992 202c 	ldrsb.w	r2, [r2, #44]	; 0x2c
@@ -12853,7 +12853,7 @@ uint32_t bme280ReadHumidity(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280De
  80058ba:	693a      	ldr	r2, [r7, #16]
  80058bc:	fb01 f202 	mul.w	r2, r1, r2
  80058c0:	1292      	asrs	r2, r2, #10
-			(((v_x1_u32r * ((int32_t) sBme280Device->ui8DigH3)) >> 11) + ((int32_t) 32768))) >> 10) + ((int32_t) 2097152)) *
+			(((v_x1_u32r * ((int32_t) bme280Device->digH3)) >> 11) + ((int32_t) 32768))) >> 10) + ((int32_t) 2097152)) *
  80058c2:	6839      	ldr	r1, [r7, #0]
  80058c4:	f891 1026 	ldrb.w	r1, [r1, #38]	; 0x26
  80058c8:	4608      	mov	r0, r1
@@ -12861,23 +12861,23 @@ uint32_t bme280ReadHumidity(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280De
  80058cc:	fb00 f101 	mul.w	r1, r0, r1
  80058d0:	12c9      	asrs	r1, r1, #11
  80058d2:	f501 4100 	add.w	r1, r1, #32768	; 0x8000
-			((int32_t) 16384)) >> 15) * (((((((v_x1_u32r * ((int32_t) sBme280Device->i8DigH6)) >> 10) *
+			((int32_t) 16384)) >> 15) * (((((((v_x1_u32r * ((int32_t) bme280Device->digH6)) >> 10) *
  80058d6:	fb01 f202 	mul.w	r2, r1, r2
-			(((v_x1_u32r * ((int32_t) sBme280Device->ui8DigH3)) >> 11) + ((int32_t) 32768))) >> 10) + ((int32_t) 2097152)) *
+			(((v_x1_u32r * ((int32_t) bme280Device->digH3)) >> 11) + ((int32_t) 32768))) >> 10) + ((int32_t) 2097152)) *
  80058da:	1292      	asrs	r2, r2, #10
  80058dc:	f502 1200 	add.w	r2, r2, #2097152	; 0x200000
-			((int32_t) sBme280Device->i16DigH2) + 8192) >> 14));
+			((int32_t) bme280Device->digH2) + 8192) >> 14));
  80058e0:	6839      	ldr	r1, [r7, #0]
  80058e2:	f9b1 1024 	ldrsh.w	r1, [r1, #36]	; 0x24
-			(((v_x1_u32r * ((int32_t) sBme280Device->ui8DigH3)) >> 11) + ((int32_t) 32768))) >> 10) + ((int32_t) 2097152)) *
+			(((v_x1_u32r * ((int32_t) bme280Device->digH3)) >> 11) + ((int32_t) 32768))) >> 10) + ((int32_t) 2097152)) *
  80058e6:	fb01 f202 	mul.w	r2, r1, r2
-			((int32_t) sBme280Device->i16DigH2) + 8192) >> 14));
+			((int32_t) bme280Device->digH2) + 8192) >> 14));
  80058ea:	f502 5200 	add.w	r2, r2, #8192	; 0x2000
  80058ee:	1392      	asrs	r2, r2, #14
-	v_x1_u32r = (((((adc_H << 14) - (((int32_t) sBme280Device->i16DigH4) << 20) - (((int32_t) sBme280Device->i16DigH5) * v_x1_u32r)) +
+	v_x1_u32r = (((((adc_H << 14) - (((int32_t) bme280Device->digH4) << 20) - (((int32_t) bme280Device->digH5) * v_x1_u32r)) +
  80058f0:	fb02 f303 	mul.w	r3, r2, r3
  80058f4:	613b      	str	r3, [r7, #16]
-	v_x1_u32r = (v_x1_u32r - (((((v_x1_u32r >> 15) * (v_x1_u32r >> 15)) >> 7) * ((int32_t) sBme280Device->ui8DigH1)) >> 4));
+	v_x1_u32r = (v_x1_u32r - (((((v_x1_u32r >> 15) * (v_x1_u32r >> 15)) >> 7) * ((int32_t) bme280Device->digH1)) >> 4));
  80058f6:	693b      	ldr	r3, [r7, #16]
  80058f8:	13db      	asrs	r3, r3, #15
  80058fa:	693a      	ldr	r2, [r7, #16]
@@ -12909,12 +12909,12 @@ uint32_t bme280ReadHumidity(I2C_HandleTypeDef *hi2c, Bme280DeviceData *sBme280De
  8005934:	fba3 2302 	umull	r2, r3, r3, r2
  8005938:	099b      	lsrs	r3, r3, #6
  800593a:	61fb      	str	r3, [r7, #28]
-	sBme280Device->ui32Humidity = humidity_RH_x_10;
+	bme280Device->humidity = humidity_RH_x_10;
  800593c:	683b      	ldr	r3, [r7, #0]
  800593e:	69fa      	ldr	r2, [r7, #28]
  8005940:	639a      	str	r2, [r3, #56]	; 0x38
 
-	return sBme280Device->ui32Humidity;
+	return bme280Device->humidity;
  8005942:	683b      	ldr	r3, [r7, #0]
  8005944:	6b9b      	ldr	r3, [r3, #56]	; 0x38
 }

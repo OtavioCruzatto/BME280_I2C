@@ -48,15 +48,15 @@ TIM_HandleTypeDef htim9;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-Bme280DeviceData g_sBme280Device;
-CommStatus g_eBme280CommStatus = NOK;
-char g_cMessage[40] = "";
-uint8_t g_ui8CounterTimer1 = 0;
-uint8_t g_ui8CounterTimer2 = 0;
+Bme280DeviceData bme280Device;
+CommStatus bme280CommStatus = NOK;
+char message[40] = "";
+uint8_t counterTimer1 = 0;
+uint8_t counterTimer2 = 0;
 
-const uint32_t g_ui32TimeoutUart = 100;
-const uint8_t g_ui8Delay2s = 200;
-const uint8_t g_ui8Delay100ms = 10;
+const uint32_t timeoutUart = 100;
+const uint8_t delay2s = 200;
+const uint8_t delay100ms = 10;
 
 /* USER CODE END PV */
 
@@ -80,8 +80,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	if (htim == &htim9)
 	{
-		g_ui8CounterTimer1++;
-		g_ui8CounterTimer2++;
+		counterTimer1++;
+		counterTimer2++;
 	}
 }
 
@@ -120,7 +120,7 @@ int main(void)
   MX_TIM9_Init();
   /* USER CODE BEGIN 2 */
 
-  g_eBme280CommStatus = bme280Init(&hi2c1, &g_sBme280Device);
+  bme280CommStatus = bme280Init(&hi2c1, &bme280Device);
   HAL_TIM_Base_Start_IT(&htim9);
 
   /* USER CODE END 2 */
@@ -133,33 +133,33 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-	  if (g_ui8CounterTimer2 >= g_ui8Delay100ms)
+	  if (counterTimer2 >= delay100ms)
 	  {
-		  if (g_eBme280CommStatus == NOK)
+		  if (bme280CommStatus == NOK)
 		  {
-			  g_eBme280CommStatus = bme280Init(&hi2c1, &g_sBme280Device);
+			  bme280CommStatus = bme280Init(&hi2c1, &bme280Device);
 		  }
-		  else if (bme280GetStatus(&hi2c1, &g_sBme280Device) == AVAILABLE)
+		  else if (bme280GetStatus(&hi2c1, &bme280Device) == AVAILABLE)
 		  {
-			  bme280ReadPressure(&hi2c1, &g_sBme280Device);
-			  bme280ReadHumidity(&hi2c1, &g_sBme280Device);
+			  bme280ReadPressure(&hi2c1, &bme280Device);
+			  bme280ReadHumidity(&hi2c1, &bme280Device);
 		  }
 
-		  g_ui8CounterTimer2 = 0;
+		  counterTimer2 = 0;
 	  }
 
-	  if (g_ui8CounterTimer1 >= g_ui8Delay2s)
+	  if (counterTimer1 >= delay2s)
 	  {
-		  sprintf(g_cMessage, "Temperature = %.2f Celsius degree\r\n", (((float) g_sBme280Device.i32Temperature) / 100));
-		  HAL_UART_Transmit(&huart2, ((uint8_t *) g_cMessage), strlen(g_cMessage), g_ui32TimeoutUart);
+		  sprintf(message, "Temperature = %.2f Celsius degree\r\n", (((float) bme280Device.temperature) / 100));
+		  HAL_UART_Transmit(&huart2, ((uint8_t *) message), strlen(message), timeoutUart);
 
-		  sprintf(g_cMessage, "Pressure    = %"PRIu32" Pascal\r\n", g_sBme280Device.ui32Pressure);
-		  HAL_UART_Transmit(&huart2, ((uint8_t *) g_cMessage), strlen(g_cMessage), g_ui32TimeoutUart);
+		  sprintf(message, "Pressure    = %"PRIu32" Pascal\r\n", bme280Device.pressure);
+		  HAL_UART_Transmit(&huart2, ((uint8_t *) message), strlen(message), timeoutUart);
 
-		  sprintf(g_cMessage, "Humidity    = %.2f%%\r\n\r\n", (((float) g_sBme280Device.ui32Humidity) /10));
-		  HAL_UART_Transmit(&huart2, ((uint8_t *) g_cMessage), strlen(g_cMessage), g_ui32TimeoutUart);
+		  sprintf(message, "Humidity    = %.2f%%\r\n\r\n", (((float) bme280Device.humidity) /10));
+		  HAL_UART_Transmit(&huart2, ((uint8_t *) message), strlen(message), timeoutUart);
 
-		  g_ui8CounterTimer1 = 0;
+		  counterTimer1 = 0;
 	  }
   }
   /* USER CODE END 3 */
